@@ -9,7 +9,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.kazumaproject.markdownhelperkeyboard.R;
@@ -17,6 +16,9 @@ import com.kazumaproject.markdownhelperkeyboard.R;
 public class DatabaseActivity extends AppCompatActivity {
 
     ListView myListView;
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+    static TangoDB dba; // DBアダプタ
 
     //起動時
     @Override
@@ -27,7 +29,7 @@ public class DatabaseActivity extends AppCompatActivity {
         //リストビュー
         myListView = findViewById(R.id.listView);
 
-        //db
+          //db
         MyOpenHelper myOpenHelper = new MyOpenHelper(this);
         SQLiteDatabase db = myOpenHelper.getWritableDatabase();
 
@@ -41,7 +43,12 @@ public class DatabaseActivity extends AppCompatActivity {
         //バインドするViewリソース
         int[] to = {android.R.id.text1,android.R.id.text2};
 
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,android.R.layout.simple_list_item_2,c,from,to,0);
+        //db作成
+        SimpleCursorAdapter adapter =
+                new SimpleCursorAdapter
+                        (this,
+                                android.R.layout.simple_list_item_2,
+                                c,from,to,0);
 
         //バインドして表示
         myListView.setAdapter(adapter);
