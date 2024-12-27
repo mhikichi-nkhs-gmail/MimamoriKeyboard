@@ -11,6 +11,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.BackgroundColorSpan
 import android.text.style.UnderlineSpan
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.*
 import android.view.textservice.*
@@ -22,6 +23,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.daasuu.bl.BubbleLayout
+import com.google.ai.client.generativeai.GenerativeModel
 import com.google.android.flexbox.*
 import com.google.android.material.textview.MaterialTextView
 import com.kazumaproject.markdownhelperkeyboard.R
@@ -177,7 +179,6 @@ class IMEService: InputMethodService() {
     private val shortCombinedVibration: CombinedVibration by lazy {
         CombinedVibration.createParallel(shortVibrationEffect)
     }
-
 
     companion object {
         val NUMBER_KEY10_SYMBOL_CHAR = listOf('(',')','[',']')
@@ -865,12 +866,32 @@ class IMEService: InputMethodService() {
                     Timber.d("Enter key: called 3\n" )
                     if (text == NGword)
                     {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            textGenTextOnlyPrompt() // suspend関数を呼び出す
+                            delay(1000)
+                            // suspend関数の結果を処理する
+                            withContext(Dispatchers.Main) {
+                                // UIスレッドで結果を表示
+                                //textView.text = "結果:" + response.text
+                                Toast.makeText(this@IMEService, "処理が完了しました", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                         val toast = Toast.makeText(this@IMEService, "禁止ワード", Toast.LENGTH_LONG)
                         toast.show()
                         currentInputConnection.deleteSurroundingText(text.length,0)
                     }
                     else
                     {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            textGenTextOnlyPrompt() // suspend関数を呼び出す
+                            delay(1000)
+                            // suspend関数の結果を処理する
+                            withContext(Dispatchers.Main) {
+                                // UIスレッドで結果を表示
+                                //textView.text = "結果:" + response.text
+                                Toast.makeText(this@IMEService, "処理が完了しました", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                         sendKeyEvent(
                             KeyEvent(
                                 KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER
@@ -2323,6 +2344,37 @@ class IMEService: InputMethodService() {
             if (isShowing){
                 dismiss()
             }
+        }
+    }
+    suspend fun textGenTextOnlyPrompt() {
+        // [START text_gen_text_only_prompt]
+        try {
+            val generativeModel =
+                GenerativeModel(
+                    // Specify a Gemini model appropriate for your use case
+                    modelName = "gemini-1.5-flash",
+                    // Access your API key as a Build Configuration variable (see "Set up your API key" above)
+                    //以下API Keyを直接貼り付ける
+                    apiKey = "AIzaSyDAXlRJ8fNjN2dufhssDh8_WCb4Tmoyjcs")
+            //Gemini APIに質問を投げる。
+            //↓不適切判断を行う(Gemini API 1.5だといい感じに返してくれた)
+            // val prompt = "　この文章が不適切(卑猥、暴言、コンプライアンス)なら1、問題ないなら0と数字のみで答えてください。解説はいりません。"
+            val prompt = "Write a story about a magic backpack."
+            val response = generativeModel.generateContent(prompt)
+            print(response.text)
+            withContext(Dispatchers.Main) {
+                Toast.makeText(
+                    this@IMEService,
+                    response.text,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            // [END text_gen_text_only_prompt]
+        } catch (e: Exception) {
+            // エラー処理
+            Log.e("GeminiAPI", "Error: ${e.message}")
+            // 例えば、エラーメッセージをダイアログで表示する
+            // showErrorDialog(e.message)
         }
     }
 

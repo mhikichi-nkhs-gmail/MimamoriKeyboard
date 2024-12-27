@@ -3,7 +3,9 @@ package com.kazumaproject.markdownhelperkeyboard.setting_activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import com.kazumaproject.markdownhelperkeyboard.R
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -40,6 +42,15 @@ class MainActivity : AppCompatActivity() {
         btnNewset.setOnClickListener {
             val intent = Intent(this,NewActivity1::class.java)
             startActivity(intent)
+        }
+    }
+
+    fun btnCurrentClick(view: View) {
+        val button = findViewById<Button>(R.id.key_enter)
+        button.setOnClickListener {
+            // ボタンがクリックされたときの処理
+            Toast.makeText(this, "ボタンがクリックされました", Toast.LENGTH_SHORT).show()
+            // ここに任意の処理を追加
         }
     }
 }
