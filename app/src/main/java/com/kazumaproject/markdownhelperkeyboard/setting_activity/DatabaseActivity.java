@@ -24,19 +24,21 @@ public class DatabaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.database);
 
+        System.out.println("データベース");
+
         //リストビュー
         myListView = findViewById(R.id.listView);
 
         //db
-        MyOpenHelper myOpenHelper = new MyOpenHelper(this);
-        SQLiteDatabase db = myOpenHelper.getWritableDatabase();
+        MyOpenHelper2 myOpenHelper2 = new MyOpenHelper2(this);
+        SQLiteDatabase db = myOpenHelper2.getWritableDatabase();
 
         //select
-        Cursor c = db.rawQuery("select * from myPasstb" , null);
+        Cursor c = db.rawQuery("select * from tango" , null);
 
         //adapterの準備
         //表示するカラム名
-        String[] from = {"_id","name"};
+        String[] from = {"_id","hiragana"};
 
         //バインドするViewリソース
         int[] to = {android.R.id.text1,android.R.id.text2};

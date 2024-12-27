@@ -50,8 +50,6 @@ public class Setting extends AppCompatActivity {
             //既存データ参照
             readDate(KBN);
 
-
-
         }else{
             //新規登録
             kbn = "登録";

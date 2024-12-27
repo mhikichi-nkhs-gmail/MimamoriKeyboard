@@ -9,6 +9,7 @@ import com.kazumaproject.markdownhelperkeyboard.R
 
 class NewActivity1 : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new1)
 

@@ -671,6 +671,7 @@ class IMEService: InputMethodService() {
     }
 
     private fun setEnterKeyAction(listIterator: ListIterator<String>) = CoroutineScope(ioDispatcher).launch {
+
         _suggestionList.update { emptyList() }
         val nextSuggestion = listIterator.next()
         currentInputConnection?.commitText(nextSuggestion,1)
