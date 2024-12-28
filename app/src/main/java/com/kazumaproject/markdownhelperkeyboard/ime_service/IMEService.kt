@@ -865,7 +865,8 @@ class IMEService: InputMethodService() {
                     Timber.d("Enter key: called 3\n" )
                     if (text == NGword)
                     {
-                        val toast = Toast.makeText(this@IMEService, "禁止ワード", Toast.LENGTH_LONG)
+                        val msg = "【$text】は禁止bワードです"
+                        val toast = Toast.makeText(this@IMEService, msg, Toast.LENGTH_LONG)
                         toast.show()
                         currentInputConnection.deleteSurroundingText(text.length,0)
                     }
@@ -906,6 +907,10 @@ class IMEService: InputMethodService() {
                             "\n${currentInputEditorInfo.privateImeOptions}")
                     if (text == NGword)
                     {
+                        val msg = "【$text】は禁止ワードですB"
+                        val toast = Toast.makeText(this@IMEService, msg, Toast.LENGTH_LONG)
+                        toast.show()
+
                         currentInputConnection.deleteSurroundingText(text.length,0)
                     }
                     else
