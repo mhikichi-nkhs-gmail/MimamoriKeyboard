@@ -15,7 +15,6 @@ class MainActivity : AppCompatActivity() {
 
         // viewの取得
         val btnStart :Button = findViewById(R.id.btnStart)//パスワード入力の所
-
         //ボタンを押したら次の画面へ
         btnStart.setOnClickListener {
             val intent = Intent(this,WelcomeActivity::class.java)

@@ -13,7 +13,6 @@ import android.text.style.BackgroundColorSpan
 import android.text.style.UnderlineSpan
 import android.view.*
 import android.view.inputmethod.*
-import android.view.textservice.*
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
@@ -50,7 +49,6 @@ import jp.co.omronsoft.openwnn.WnnWord
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.math.abs
@@ -165,6 +163,8 @@ class IMEService: InputMethodService() {
     private var deleteKeyLongKeyPressed = false
     private var NGword = "登別"
 
+    private lateinit var gemini:Gemini
+
 
     private val vibratorManager: VibratorManager by lazy {
         getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
@@ -196,6 +196,8 @@ class IMEService: InputMethodService() {
 
     @SuppressLint("InflateParams", "ClickableViewAccessibility")
     override fun onCreateInputView(): View? {
+        gemini = Gemini()
+
         val ctx = ContextThemeWrapper(this, R.style.Theme_MarkdownKeyboard)
         mainLayoutBinding = MainLayoutBinding.inflate(LayoutInflater.from(ctx))
         return mainLayoutBinding?.root.apply {
@@ -226,6 +228,7 @@ class IMEService: InputMethodService() {
 
     override fun onStartInput(attribute: EditorInfo?, restarting: Boolean) {
         super.onStartInput(attribute, restarting)
+
         Timber.d("onStartInput: $restarting")
         currentInputConnection?.requestCursorUpdates(InputConnection.CURSOR_UPDATE_MONITOR)
         resetAllFlags()
@@ -862,10 +865,14 @@ class IMEService: InputMethodService() {
             InputTypeForIME.TextEditTextInBookingTDBank
             -> {
                 currentInputConnection?.apply {
-                    Timber.d("Enter key: called 3\n" )
+                    Timber.d("Enter key: called 3 $text\n" )
+                    val ret = gemini.getResponse(text as? String?)
+                    println(ret)
                     if (text == NGword)
                     {
-                        val msg = "【$text】は禁止bワードです"
+
+                        val msg = "【$text】は禁止ワードです"
+                        Timber.d(msg)
                         val toast = Toast.makeText(this@IMEService, msg, Toast.LENGTH_LONG)
                         toast.show()
                         currentInputConnection.deleteSurroundingText(text.length,0)
@@ -905,8 +912,13 @@ class IMEService: InputMethodService() {
                             "\n${currentInputEditorInfo.imeOptions}" +
                             "\n${currentInputEditorInfo.actionId}" +
                             "\n${currentInputEditorInfo.privateImeOptions}")
+
+                    val ret = gemini.getResponse(text as? String?)
+                    println(ret)
+
                     if (text == NGword)
                     {
+                        Timber.d("enter key search: $text")
                         val msg = "【$text】は禁止ワードですB"
                         val toast = Toast.makeText(this@IMEService, msg, Toast.LENGTH_LONG)
                         toast.show()
